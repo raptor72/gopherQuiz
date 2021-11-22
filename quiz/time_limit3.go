@@ -7,6 +7,7 @@ import (
     "log"
     "fmt"
     "strconv"
+    "flag"
 )
 
 type Quiz struct {
@@ -43,16 +44,16 @@ func load_quiz(csv_file string) []Quiz {
 }
 
 
-func timeTimer(qzs []Quiz) {
-    timer := time.After(time.Second * 4)
+func timeTimer(qzs []Quiz, timeout int) {
+    timer := time.After(time.Second * time.Duration(timeout))
     <-timer
     printResult(qzs)
     os.Exit(0)
 }
 
 
-func run(qzs []Quiz) []Quiz {
-    go timeTimer(qzs)
+func run(qzs []Quiz, timeout int) []Quiz {
+    go timeTimer(qzs, timeout)
     var userAnswer int
     for idx, quiz := range qzs {
         fmt.Println(quiz.question)
@@ -77,7 +78,10 @@ func printResult(qzs []Quiz) {
 
 
 func main() {
-    quizs := load_quiz("problems.csv")
-    run(quizs)
+    filename := flag.String("filename", "problems.csv", "a string filename to load quiz")
+    timeout := flag.Int("timeout", 4, "an int default timeout")
+    flag.Parse()
+    quizs := load_quiz(*filename)
+    run(quizs, *timeout)
 }
 
