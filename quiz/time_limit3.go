@@ -41,8 +41,30 @@ func load_quiz(csv_file string) []Quiz {
         return quizs
 }
 
+
+
+//func (quiz *Quiz) answered(ans int) {
+//    quiz.user_answer = ans
+//}
+
+
+func run(qzs []Quiz) []Quiz {
+// [{5+5 10 0} {1+1 2 0} {8+3 11 0} {1+2 3 0} {8+6 14 0} {3+1 4 0} {1+4 5 0} {5+1 6 0} {2+3 5 0} {3+3 6 0} {2+4 6 0} {5+2 7 0}]
+    count := len(qzs)
+    var userAnswer int
+    fmt.Printf("Total count of questions is: %d\n", count)
+    for idx, quiz := range qzs {
+        fmt.Println(quiz)
+        fmt.Scan(&userAnswer)
+        quiz.user_answer = userAnswer
+        qzs[idx] = quiz
+    }
+    return qzs
+}
+
 func main() {
     quizs := load_quiz("problems.csv")
     fmt.Println(quizs) // [{5+5 10 0} {1+1 2 0} ...]
+    fmt.Println(run(quizs))
 }
 
