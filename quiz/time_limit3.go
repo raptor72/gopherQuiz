@@ -1,6 +1,7 @@
 package main
 
 import (
+    "time"
     "os"
     "encoding/csv"
     "log"
@@ -10,7 +11,7 @@ import (
 
 type Quiz struct {
     question string
-    answer int
+    right_answer int
     user_answer int
 }
 
@@ -42,19 +43,19 @@ func load_quiz(csv_file string) []Quiz {
 }
 
 
-
-//func (quiz *Quiz) answered(ans int) {
-//    quiz.user_answer = ans
-//}
+func timeTimer(qzs []Quiz) {
+    timer := time.After(time.Second * 4)
+    <-timer
+    printResult(qzs)
+    os.Exit(0)
+}
 
 
 func run(qzs []Quiz) []Quiz {
-// [{5+5 10 0} {1+1 2 0} {8+3 11 0} {1+2 3 0} {8+6 14 0} {3+1 4 0} {1+4 5 0} {5+1 6 0} {2+3 5 0} {3+3 6 0} {2+4 6 0} {5+2 7 0}]
-    count := len(qzs)
+    go timeTimer(qzs)
     var userAnswer int
-    fmt.Printf("Total count of questions is: %d\n", count)
     for idx, quiz := range qzs {
-        fmt.Println(quiz)
+        fmt.Println(quiz.question)
         fmt.Scan(&userAnswer)
         quiz.user_answer = userAnswer
         qzs[idx] = quiz
@@ -62,9 +63,21 @@ func run(qzs []Quiz) []Quiz {
     return qzs
 }
 
+
+func printResult(qzs []Quiz) {
+    total_count := len(qzs)
+    var right_answers int
+    for _, quiz := range qzs {
+        if quiz.right_answer == quiz.user_answer {
+            right_answers++
+        }
+    }
+    fmt.Printf("Total questions: %d right answers: %d\n", total_count, right_answers)
+}
+
+
 func main() {
     quizs := load_quiz("problems.csv")
-    fmt.Println(quizs) // [{5+5 10 0} {1+1 2 0} ...]
-    fmt.Println(run(quizs))
+    run(quizs)
 }
 
