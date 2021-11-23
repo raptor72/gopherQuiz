@@ -40,6 +40,7 @@ func loadQuiz(csv_file string) []Quiz {
 		quiz := Quiz{row[0], panswer, 0}
 		quizs = append(quizs, quiz)
 	}
+        fmt.Println(quizs)
 	return quizs
 }
 
