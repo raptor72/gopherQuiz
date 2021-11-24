@@ -36,7 +36,6 @@ func loadQuiz(csv_file string) []Quiz {
 		if err != nil {
 			log.Fatal("error of type result")
 		}
-
 		quiz := Quiz{row[0], panswer, 0}
 		quizs = append(quizs, quiz)
 	}
@@ -59,7 +58,7 @@ func run(qzs []Quiz, timeout int) {
 		quiz.user_answer = userAnswer
 		qzs[idx] = quiz
 	}
-        printResult(qzs)
+	printResult(qzs)
 }
 
 func printResult(qzs []Quiz) {
