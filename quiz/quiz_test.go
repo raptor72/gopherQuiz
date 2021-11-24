@@ -2,8 +2,11 @@ package main
 
 import (
     "testing"
+    "os"
+    "io"
+    "bytes"
+    "fmt"
 )
-
 
 /*
 type Quiz struct {
@@ -12,47 +15,19 @@ type Quiz struct {
         user_answer  int
 }
 
-func loadQuiz(csv_file string) []Quiz {
-        var quizs []Quiz
-        file, err := os.Open(csv_file)
-        if err != nil {
-                log.Fatal(err)
-        }
-        defer file.Close()
-        r := csv.NewReader(file)
-        rows, err := r.ReadAll()
-        if err != nil {
-                log.Fatal(err)
-        }
-        for _, row := range rows {
-                if len(row) != 2 {
-                        log.Fatal("Wrong row length")
+func printResult(qzs []Quiz) {
+        total_count := len(qzs)
+        var right_answers int
+        for _, quiz := range qzs {
+                if quiz.right_answer == quiz.user_answer {
+                        right_answers++
                 }
-                panswer, err := strconv.Atoi(row[1])
-                if err != nil {
-                        log.Fatal("error of type result")
-                }
-
-                quiz := Quiz{row[0], panswer, 0}
-                quizs = append(quizs, quiz)
         }
-        return quizs
+        fmt.Printf("Total questions: %d right answers: %d\n", total_count, right_answers)
 }
+
 */
 
-/*
-func TestprintResult(t *testing.T) {
-    a := Quiz{"1+1",2, 2}
-    b := Quiz{"1+2",3, 3}
-    c := Quiz{"3+8",11, 11}
-    qzs := []Quiz{a,b,c}
-    testingResult := printResult(qzs)
-    rigthResult := "Total questions: 3 right answers: 3\n"
-    if testingResult != rigthResult {
-        t.Fatalf("Want %v, but got %v", rigthResult, testingResult)
-    }
-}
-*/
 
 func TestLoadQuis(t *testing.T) {
     file := "problems.csv"
@@ -64,6 +39,41 @@ func TestLoadQuis(t *testing.T) {
         }
     }
 }
+
+
+func TestPrintResult(t *testing.T) {
+    quiz := []Quiz{Quiz{"5+5", 10, 10}, Quiz{"1+1", 2, 2}, Quiz{"8+3", 11, 0}}
+    var expected_string string = "Total questions: 3 right answers: 2\n"
+    old := os.Stdout // keep backup of the real stdout
+    r, w, _ := os.Pipe()
+    os.Stdout = w
+    printResult(quiz)
+
+    outC := make(chan string)
+    // copy the output in a separate goroutine so printing can't block indefinitely
+    go func() {
+        var buf bytes.Buffer
+        io.Copy(&buf, r)
+        outC <- buf.String()
+    }()
+
+    // back to normal state
+    w.Close()
+    os.Stdout = old // restoring the real stdout
+    out := <-outC
+
+    // reading our temp stdout
+//    fmt.Println(out)
+    if out != expected_string {
+        t.Fatalf("Want %v\n, but got %v", expected_string, out)
+    }
+}
+
+
+
+
+
+
 
 
 

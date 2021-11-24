@@ -40,7 +40,6 @@ func loadQuiz(csv_file string) []Quiz {
 		quiz := Quiz{row[0], panswer, 0}
 		quizs = append(quizs, quiz)
 	}
-        fmt.Println(quizs)
 	return quizs
 }
 
@@ -51,7 +50,7 @@ func timeTimer(qzs []Quiz, timeout int) {
 	os.Exit(0)
 }
 
-func run(qzs []Quiz, timeout int) []Quiz {
+func run(qzs []Quiz, timeout int) {
 	go timeTimer(qzs, timeout)
 	var userAnswer int
 	for idx, quiz := range qzs {
@@ -60,7 +59,7 @@ func run(qzs []Quiz, timeout int) []Quiz {
 		quiz.user_answer = userAnswer
 		qzs[idx] = quiz
 	}
-	return qzs
+        printResult(qzs)
 }
 
 func printResult(qzs []Quiz) {
