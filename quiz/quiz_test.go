@@ -9,8 +9,8 @@ import (
 )
 
 func TestLoadQuis(t *testing.T) {
-	file := "problems.csv"
-	expected_qzs := []Quiz{Quiz{"5+5", 10, 0}, Quiz{"1+1", 2, 0}, Quiz{"8+3", 11, 0}, Quiz{"1+2", 3, 0}, Quiz{"8+6", 14, 0}, Quiz{"3+1", 4, 0}, Quiz{"1+4", 5, 0}, Quiz{"5+1", 6, 0}, Quiz{"2+3", 5, 0}, Quiz{"3+3", 6, 0}, Quiz{"2+4", 6, 0}, Quiz{"5+2", 7, 0}}
+	file := "test.csv"
+        expected_qzs := []Quiz{Quiz{"2+2", "4", "0"}, Quiz{"5+6", "11", "0"}, Quiz{"1+1", "2", "0"}}
 	qzs := loadQuiz(file)
 	for idx, quiz := range qzs {
 		if quiz != expected_qzs[idx] {
@@ -20,7 +20,7 @@ func TestLoadQuis(t *testing.T) {
 }
 
 func TestPrintResult(t *testing.T) {
-	quiz := []Quiz{Quiz{"5+5", 10, 10}, Quiz{"1+1", 2, 2}, Quiz{"8+3", 11, 0}}
+	quiz := []Quiz{Quiz{"5+5", "10", "10"}, Quiz{"1+1", "2", "2"}, Quiz{"8+3", "11", "0"}}
 	var expected_string string = "Total questions: 3 right answers: 2\n"
 	old := os.Stdout // keep backup of the real stdout
 	r, w, _ := os.Pipe()
@@ -46,7 +46,7 @@ func TestPrintResult(t *testing.T) {
 }
 
 func TestPrintResult2(t *testing.T) {
-	quiz := []Quiz{Quiz{"5+5", 10, 10}, Quiz{"1+1", 2, 2}, Quiz{"8+3", 11, 0}}
+	quiz := []Quiz{Quiz{"5+5", "10", "10"}, Quiz{"1+1", "2", "2"}, Quiz{"8+3", "11", "0"}}
 	var expected_string string = "Total questions: 3 right answers: 2\n"
 	rescueStdout := os.Stdout
 	r, w, _ := os.Pipe()

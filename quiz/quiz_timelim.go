@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"time"
+	"strings"
 )
 
 type Quiz struct {
 	question     string
-	right_answer int
-	user_answer  int
+	right_answer string
+	user_answer  string
 }
 
 func loadQuiz(csv_file string) []Quiz {
@@ -32,11 +32,7 @@ func loadQuiz(csv_file string) []Quiz {
 		if len(row) != 2 {
 			log.Fatal("Wrong row length")
 		}
-		panswer, err := strconv.Atoi(row[1])
-		if err != nil {
-			log.Fatal("error of type result")
-		}
-		quiz := Quiz{row[0], panswer, 0}
+		quiz := Quiz{row[0], strings.TrimSpace(row[1]), "0"}
 		quizs = append(quizs, quiz)
 	}
 	return quizs
@@ -51,7 +47,7 @@ func timeTimer(qzs []Quiz, timeout int) {
 
 func run(qzs []Quiz, timeout int) {
 	go timeTimer(qzs, timeout)
-	var userAnswer int
+	var userAnswer string
 	for idx, quiz := range qzs {
 		fmt.Println(quiz.question)
 		fmt.Scan(&userAnswer)
@@ -63,13 +59,13 @@ func run(qzs []Quiz, timeout int) {
 
 func printResult(qzs []Quiz) {
 	total_count := len(qzs)
-	var right_answers int
+	var right int
 	for _, quiz := range qzs {
 		if quiz.right_answer == quiz.user_answer {
-			right_answers++
+			right++
 		}
 	}
-	fmt.Printf("Total questions: %d right answers: %d\n", total_count, right_answers)
+	fmt.Printf("Total questions: %d right answers: %d\n", total_count, right)
 }
 
 func main() {
