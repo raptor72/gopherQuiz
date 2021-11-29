@@ -37,6 +37,7 @@ func main() {
 func defaultMux() *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", hello)
+//        fmt.Printf("%T", hello) // func(http.ResponseWriter, *http.Request)
 	return mux
 }
 
