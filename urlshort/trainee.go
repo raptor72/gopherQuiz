@@ -21,8 +21,14 @@ func hello2(w http.ResponseWriter, req *http.Request) {
     fmt.Println("################################")
     fmt.Println(w)
     fmt.Println("################################")
-//    fmt.Printf("%T", w)
+//    fmt.Printf("%T", w) // *http.response
 }
+
+
+//func Redirect(w ResponseWriter, r *Request, url string, code int)
+//func RedirectHandler(url string, code int) Handler
+//func hello3()
+//https://pkg.go.dev/net/http#RedirectHandler
 
 func main() {
 pathsToUrls := map[string]string{
@@ -31,9 +37,22 @@ pathsToUrls := map[string]string{
 }
 fmt.Println(pathsToUrls)
 fmt.Printf("%T\n", pathsToUrls)
+
+h1 := func(w http.ResponseWriter, _ *http.Request) {
+    io.WriteString(w, "Hello from a HandleFunc #1!\n")
+}
+h2 := func(w http.ResponseWriter, _ *http.Request) {
+    io.WriteString(w, "Hello from a HandleFunc #2!\n")
+}
 mux := http.NewServeMux()
-mux.HandleFunc("/sendstrailers", hello2)
+mux.HandleFunc("/send", hello2)
+mux.HandleFunc("/", h1)
+mux.HandleFunc("/endpoint", h2)
 
 fmt.Println("Starting the trainee server on :8081")
 http.ListenAndServe(":8081", mux)
 }
+
+
+
+
