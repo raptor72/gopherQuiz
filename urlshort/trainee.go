@@ -37,20 +37,41 @@ pathsToUrls := map[string]string{
 }
 fmt.Println(pathsToUrls)
 fmt.Printf("%T\n", pathsToUrls)
+fmt.Println(pathsToUrls["/urlshort-godoc"])
 
+/*
 h1 := func(w http.ResponseWriter, _ *http.Request) {
     io.WriteString(w, "Hello from a HandleFunc #1!\n")
 }
+*/
+
 h2 := func(w http.ResponseWriter, _ *http.Request) {
     io.WriteString(w, "Hello from a HandleFunc #2!\n")
 }
+
+newHandler := func(w http.ResponseWriter, req *http.Request) {
+    fmt.Println(req.URL.Path)
+    if val, ok := pathsToUrls[req.URL.Path]; ok {
+        fmt.Fprintf(w, "Welcome to the home page!")
+        fmt.Printf("%s\n", val)
+        fmt.Fprintf(w, val)
+//        http.Redirect(w, req, val, 301)
+    } else {
+        http.NotFound(w, req)
+        return
+    }
+}
+
 mux := http.NewServeMux()
+fmt.Printf("%T", mux)
 mux.HandleFunc("/send", hello2)
-mux.HandleFunc("/", h1)
+mux.HandleFunc("/", newHandler)
 mux.HandleFunc("/endpoint", h2)
+
 
 fmt.Println("Starting the trainee server on :8081")
 http.ListenAndServe(":8081", mux)
+
 }
 
 
