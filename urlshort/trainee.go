@@ -62,6 +62,8 @@ newHandler := func(w http.ResponseWriter, req *http.Request) {
     }
 }
 
+
+
 mux := http.NewServeMux()
 fmt.Printf("%T", mux)
 mux.HandleFunc("/send", hello2)
