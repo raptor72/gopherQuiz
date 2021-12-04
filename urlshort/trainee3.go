@@ -1,7 +1,6 @@
 package main
 
 import (
-//        "io"
         "log"
         "fmt"
         "net/http"
@@ -10,6 +9,7 @@ import (
 func main() {
         mux := defaultMux()
         fmt.Printf("%T\n", mux) // http.ServeMux -> http.HandlerFunc
+
         pathsToUrls := map[string]string{
                 "/urlshort-godoc": "https://godoc.org/github.com/gophercises/urlshort",
                 "/yaml-godoc":     "https://godoc.org/gopkg.in/yaml.v2",
@@ -19,13 +19,15 @@ func main() {
         log.Fatal(http.ListenAndServe(":8080", mapHandler))
 }
 
+
 func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.HandlerFunc {
-    redirect := func (w http.ResponseWriter, r *http.Request) {
+    return func(w http.ResponseWriter, r *http.Request) {
         if val, ok := pathsToUrls[r.URL.Path]; ok {
             http.Redirect(w, r, val, 301)
         }
+        fallback.ServeHTTP(w, r)
     }
-    return redirect
+
 }
 
 
@@ -35,6 +37,8 @@ func defaultMux() *http.ServeMux {
         return mux
 }
 
+
 func hello(w http.ResponseWriter, r *http.Request) {
         fmt.Fprintln(w, "Hello, world!")
 }
+

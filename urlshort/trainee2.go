@@ -22,6 +22,7 @@ func main() {
 
 
 func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.HandlerFunc {
+    mux := http.NewServeMux()
     fmt.Println(pathsToUrls)
     fmt.Printf("%T\n", fallback)
     isHandler := func(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +41,9 @@ func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.Handl
         }
     }
     fmt.Printf("%T\n", isHandler)
-    return isHandler
+    mux.HandleFunc("/", hello)
+    return mux
+
 }
 
 
