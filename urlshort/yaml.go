@@ -11,9 +11,16 @@ type yamlStruct struct {
         URL  string `yaml:"url"`
 }
 
-func parseYaml(stringYaml string) []yamlStruct {
+
+func bytesToString(data []byte) string {
+        return string(data[:])
+}
+
+
+func parseYaml(yml []byte) []yamlStruct {
         var yamlArray []yamlStruct
         var y yamlStruct
+        stringYaml := bytesToString(yml)
         s := strings.Split(stringYaml, "- ")
         for _, yamlBlock := range s {
                 yamlBlock = strings.ReplaceAll(yamlBlock, "  ", "")
@@ -31,6 +38,7 @@ func parseYaml(stringYaml string) []yamlStruct {
         return yamlArray
 }
 
+
 func buildMap(yamlArray []yamlStruct) map[string]string {
         result := make(map[string]string)
         for _, yamlStruct := range yamlArray {
@@ -47,7 +55,10 @@ func main() {
 - path: /urlshort-final
   url: https://github.com/gophercises/urlshort/tree/solution
 `
-        parsedYaml := parseYaml(yml)
+        byaml := []byte(yml)
+//        fmt.Println(string(byaml))
+//        fmt.Println(bytesToString(byaml))
+        parsedYaml := parseYaml(byaml)
         mapArray := buildMap(parsedYaml)
         fmt.Println(mapArray)
 }
