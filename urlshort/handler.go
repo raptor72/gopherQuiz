@@ -2,36 +2,65 @@ package urlshort
 
 import (
 	"net/http"
+        "fmt"
+        "gopkg.in/yaml.v2"
+        "strings"
 )
 
-// MapHandler will return an http.HandlerFunc (which also
-// implements http.Handler) that will attempt to map any
-// paths (keys in the map) to their corresponding URL (values
-// that each key in the map points to, in string format).
-// If the path is not provided in the map, then the fallback
-// http.Handler will be called instead.
 func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.HandlerFunc {
-	//	TODO: Implement this...
-	return nil
+    return func(w http.ResponseWriter, r *http.Request) {
+        if val, ok := pathsToUrls[r.URL.Path]; ok {
+            http.Redirect(w, r, val, 301)
+        }
+        fallback.ServeHTTP(w, r)
+    }
 }
 
-// YAMLHandler will parse the provided YAML and then return
-// an http.HandlerFunc (which also implements http.Handler)
-// that will attempt to map any paths to their corresponding
-// URL. If the path is not provided in the YAML, then the
-// fallback http.Handler will be called instead.
-//
-// YAML is expected to be in the format:
-//
-//     - path: /some-path
-//       url: https://www.some-url.com/demo
-//
-// The only errors that can be returned all related to having
-// invalid YAML data.
-//
-// See MapHandler to create a similar http.HandlerFunc via
-// a mapping of paths to urls.
+type yamlStruct struct {
+        PATH string `yaml:"path"`
+        URL  string `yaml:"url"`
+}
+
+func bytesToString(data []byte) string {
+        return string(data[:])
+}
+
+func parseYAML(yml []byte) []yamlStruct, err {
+        var yamlArray []yamlStruct
+        var y yamlStruct
+        stringYaml := bytesToString(yml)
+        s := strings.Split(stringYaml, "- ")
+        for _, yamlBlock := range s {
+                yamlBlock = strings.ReplaceAll(yamlBlock, "  ", "")
+                if len(yamlBlock) == 0 {
+                    continue
+                }
+                err := yaml.Unmarshal([]byte(yamlBlock), &y)
+                if err != nil {
+                        return nil, err
+                }
+                if y.URL != "" {
+                        yamlArray = append(yamlArray, y)
+                }
+        }
+        return yamlArray, nil
+}
+
+
+func buildMap(yamlArray []yamlStruct) map[string]string {
+        result := make(map[string]string)
+        for _, yamlStruct := range yamlArray {
+                result[yamlStruct.PATH] = yamlStruct.URL
+        }
+        return result
+}
+
 func YAMLHandler(yml []byte, fallback http.Handler) (http.HandlerFunc, error) {
-	// TODO: Implement this...
-	return nil, nil
+  parsedYaml, err := parseYAML(yaml)
+  if err != nil {
+    return nil, err
+  }
+  pathMap := buildMap(parsedYaml)
+  fmt.Println(pathMap)
+  return MapHandler(pathMap, fallback), nil
 }
