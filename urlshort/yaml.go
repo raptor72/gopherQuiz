@@ -1,3 +1,4 @@
+/*
 package main
 
 import (
@@ -62,3 +63,4 @@ func main() {
         mapArray := buildMap(parsedYaml)
         fmt.Println(mapArray)
 }
+*/
