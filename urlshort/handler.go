@@ -25,7 +25,7 @@ func bytesToString(data []byte) string {
         return string(data[:])
 }
 
-func parseYAML(yml []byte) []yamlStruct, err {
+func parseYAML(yml []byte) ([]yamlStruct, error) {
         var yamlArray []yamlStruct
         var y yamlStruct
         stringYaml := bytesToString(yml)
@@ -56,7 +56,7 @@ func buildMap(yamlArray []yamlStruct) map[string]string {
 }
 
 func YAMLHandler(yml []byte, fallback http.Handler) (http.HandlerFunc, error) {
-  parsedYaml, err := parseYAML(yaml)
+  parsedYaml, err := parseYAML(yml)
   if err != nil {
     return nil, err
   }
