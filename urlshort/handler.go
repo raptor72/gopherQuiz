@@ -4,7 +4,7 @@ import (
 	"net/http"
         "fmt"
         "gopkg.in/yaml.v2"
-        "strings"
+//        "strings"
 )
 
 func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.HandlerFunc {
@@ -25,6 +25,7 @@ func bytesToString(data []byte) string {
         return string(data[:])
 }
 
+/*
 func parseYAML(yml []byte) ([]yamlStruct, error) {
         var yamlArray []yamlStruct
         var y yamlStruct
@@ -44,6 +45,18 @@ func parseYAML(yml []byte) ([]yamlStruct, error) {
                 }
         }
         return yamlArray, nil
+}
+*/
+
+
+// Shortest way to unmarshalling multiple yaml lines
+func parseYAML(yml []byte) ([]yamlStruct, error) {
+    var yamlArray []yamlStruct
+    err := yaml.Unmarshal(yml, &yamlArray)
+    if err != nil {
+        return nil, err
+    }
+    return yamlArray, nil
 }
 
 
