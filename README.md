@@ -24,4 +24,14 @@ The CSV file will be in a format like below, where the first column is a questio
 ```
 
 To view help, run:
+```
+go run ./quiz.go --help
+```
+
+To run tests, do:
+```
+go test
+PASS
+ok      gophercises     0.004s
+```
 
